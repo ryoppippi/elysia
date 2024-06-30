@@ -1,3 +1,55 @@
+# 1.0.26 - 30 Jun 2024
+Bug fix:
+- mapResponse is not called on beforeHandle, and afterHandle
+
+# 1.0.25 - 21 Jun 2024
+Bug fix:
+- type is resolved as `File` if `@types/bun` is not installed when using with Eden Treaty
+
+# 1.0.24 - 18 Jun 2024
+Bug fix:
+- `derive`, `resolve` support void return
+- [#677](https://github.com/elysiajs/elysia/issues/677) Query params validation for array of string fail
+
+# 1.0.23 - 9 Jun 2024
+Feature:
+- add `toResponse` for mapping custom response
+- [#606](https://github.com/elysiajs/elysia/issues/606) Object encoding in query parameters
+
+Bug fix:
+- [#654](https://github.com/elysiajs/elysia/pull/654) set correct normalization behavior for addtional properties
+- [#649](https://github.com/elysiajs/elysia/pull/649) cookie decode value might be null
+- [#664](https://github.com/elysiajs/elysia/issues/664) "default" option is not being applied on validation
+- [#656](https://github.com/elysiajs/elysia/issues/656) ctx.query doesn't work in some case
+    - set forceDynamicQuery to true by default
+- [#658](https://github.com/elysiajs/elysia/issues/658) aot does not recognize the use of ctx.body within a try catch
+- [#630](https://github.com/elysiajs/elysia/issues/630) accessing ctx.query directly breaks the object
+
+# 1.0.22 - 23 May 2024
+Breaking Change:
+- set default cookie path to `/`
+
+Feature:
+- add `form` utility for returning explicit formdata
+- add object with image to return as `formdata`
+
+Bug fix:
+- return `Bun.file` by specifying `t.File()` and `t.Object({ any: t.File() })` as a response
+
+# 1.0.21 - 21 May 2024
+Breaking Change:
+- `t.type({ error })` now accepts `(error: ({ type, validator, value, errors }) => unknown)` instead of `(error: (type, validator, value) => unknown)`
+
+Improvement:
+- `t.type({ error })` accepts `string | number | boolean | Object` instead of `string`
+- `t.type({ error })` return `string | number | boolean | Object | void` instead of `string`
+- add `errors: ValueError[]` to `t.type({ error({ errors }) {} })`
+
+Bug fix:
+- [#644](https://github.com/elysiajs/elysia/issues/644) redirect doesn't work with `aot: false`
+- [#641](https://github.com/elysiajs/elysia/issues/641) cookie schema validation doesn't work with `aot: true`
+- [#615](https://github.com/elysiajs/elysia/issues/615) highlight derive and resolve when using `onError`
+
 # 1.0.20 - 13 May 2024
 Bug fix:
 - macro is not inherits inside group

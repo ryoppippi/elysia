@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'bun:test'
 import { mapResponse } from '../../src/handler'
 import { Passthrough } from './utils'
+import Elysia, { form } from '../../src'
+import { req } from '../utils'
 
 const defaultContext = {
 	cookie: {},
@@ -135,7 +137,10 @@ describe('Map Response', () => {
 	})
 
 	it('map custom Response', async () => {
-		const response = mapResponse(new CustomResponse('Shiroko'), defaultContext)
+		const response = mapResponse(
+			new CustomResponse('Shiroko'),
+			defaultContext
+		)
 
 		expect(response).toBeInstanceOf(Response)
 		expect(await response.text()).toEqual('Shiroko')
@@ -355,5 +360,52 @@ describe('Map Response', () => {
 		expect(response.headers.get('accept-ranges')).toBeNull()
 		expect(response.headers.get('content-range')).toBeNull()
 		expect(response.status).toBe(200)
+	})
+
+	it('map formdata', async () => {
+		const response = mapResponse(
+			form({
+				a: Bun.file('test/kyuukurarin.mp4')
+			}),
+			defaultContext
+		)
+
+		expect(await response.formData()).toBeInstanceOf(FormData)
+		expect(response.headers.get('content-type')).toStartWith(
+			'multipart/form-data'
+		)
+		expect(response.status).toBe(200)
+	})
+
+	it('map beforeHandle', async () => {
+		const app = new Elysia()
+			.mapResponse(() => {
+				return new Response('b')
+			})
+			.get('/', () => 'a', {
+				beforeHandle() {
+					return 'a'
+				}
+			})
+
+		const response = await app.handle(req('/')).then(x => x.text())
+
+		expect(response).toBe('b')
+	})
+
+	it('map afterHandle', async () => {
+		const app = new Elysia()
+			.mapResponse(() => {
+				return new Response('b')
+			})
+			.get('/', () => 'a', {
+				beforeHandle() {
+					return 'a'
+				}
+			})
+
+		const response = await app.handle(req('/')).then(x => x.text())
+
+		expect(response).toBe('b')
 	})
 })
